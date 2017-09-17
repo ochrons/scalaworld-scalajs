@@ -1,5 +1,5 @@
 # Scala World Scala.js workshop
-Scala.js project base for Scala World 2017 workshop
+Scala.js project base for Scala World 2017 workshop - the Client-Server vesion
 
 # Getting started
 First of all make sure you have the necessary tools installed. You'll need the following:
@@ -15,6 +15,7 @@ Now you're ready to download and start using the starter project:
 
 1. `git clone https://github.com/ochrons/scalaworld-scalajs.git`
 1. `cd scalaworld-scalajs`
+1. `git checkout clientserver`
 1. `sbt`
-1. `~fastOptJS` automatically compiles your code to JS when you make changes
-1. In your browser navigate to [http://localhost:12345/target/scala-2.12/classes/index.html](http://localhost:12345/target/scala-2.12/classes/index.html)
+1. `~reStart` automatically compiles your client/server code when you make changes
+1. In your browser navigate to [http://localhost:12346](http://localhost:12346)
