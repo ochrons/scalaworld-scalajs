@@ -27,6 +27,8 @@ class WebService() extends Directives with CirceSupport {
           complete(todoService.todo(id))
         } ~ get {
           complete(todoService.allTodos)
+        } ~ (post & parameter('task)) { (task) =>
+          complete(todoService.add(task))
         } ~ (post & parameters(('id.as[Int], 'task))) { (id, task) =>
           complete(todoService.update(id, task))
         } ~ (post & parameters(('id.as[Int], 'switch))) { (id, _) =>

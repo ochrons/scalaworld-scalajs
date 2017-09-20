@@ -5,6 +5,7 @@ import org.scalajs.dom.ext.Ajax
 
 import scalatags.JsDom.all._
 import io.circe.parser._
+import org.scalajs.dom.{Event, MouseEvent, XMLHttpRequest}
 import shared.Todo
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -31,11 +32,27 @@ object HelloScalaWorld {
     loadTodos()
   }
 
+  private def decodeTodos(response: XMLHttpRequest) = {
+    decode[List[Todo]](response.responseText).foreach { todos =>
+      showTodos(todos)
+    }
+  }
+
   def loadTodos(): Unit = {
-    Ajax.get("/api/todo").map { request =>
-      decode[List[Todo]](request.responseText).foreach { todos =>
-        showTodos(todos)
-      }
+    Ajax.get("/api/todo").map { response =>
+      decodeTodos(response)
+    }
+  }
+
+  def switchTodo(id: Int): Unit = {
+    Ajax.post(s"/api/todo?id=$id&switch").map { response =>
+      decodeTodos(response)
+    }
+  }
+
+  def deleteTodo(id: Int): Unit = {
+    Ajax.delete(s"/api/todo?id=$id").map { response =>
+      decodeTodos(response)
     }
   }
 
@@ -45,7 +62,11 @@ object HelloScalaWorld {
 
     // build rows of todos
     val todoList = todos.map { todo =>
-      tr(td(todo.task), td(todo.completed.toString))
+      tr(
+        td(todo.task),
+        td(todo.completed.toString, onclick := { (e: MouseEvent) => switchTodo(todo.id)}),
+        td(button("Delete", onclick := { (e: MouseEvent) => deleteTodo(todo.id)}))
+      )
     }
 
     // update DOM
@@ -55,5 +76,16 @@ object HelloScalaWorld {
         todoList
       ).render
     )
+
+    lazy val addInput = input(placeholder := "Add todo", onchange := addTodoHandler _).render
+
+    def addTodoHandler(e: Event): Unit = {
+      Ajax.post(s"/api/todo?task=${addInput.value}").map { response =>
+        decodeTodos(response)
+      }
+    }
+
+    todoDiv.appendChild(addInput)
+
   }
 }

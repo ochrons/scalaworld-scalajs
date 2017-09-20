@@ -10,11 +10,11 @@ class TodoService {
 
   def todo(id: Int): Option[Todo] = todos.find(_.id == id)
 
-  def add(task: String): Todo = {
+  def add(task: String): List[Todo] = {
     val todo = Todo(nextId, task, completed = false)
     todos :+= todo
     nextId += 1
-    todo
+    todos
   }
 
   def switchComplete(id: Int): List[Todo] = {
